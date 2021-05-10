@@ -6,4 +6,16 @@ before_install:
   - curl https://sdk.cloud.google.com | bash > /dev/null;   #going to download google cloud SDK and install it locally on our instance for travis CI.
   - source $HOME:google-cloud-sdk/path.bash.inc             #look at the default install directory of google cloud SDK, and source the file path.bash.inc.
   - gcloud components update kubectl                        #Install kubectk command.
-  - gcloud auth activate-sercice-account --key-file sercice-account.json    #autorisations to login 
+  - gcloud auth activate-sercice-account --key-file service-account.json    #autorisations to login 
+  - gcloud config set project multi-k8s-312823            #project name
+  - gcloud config set compute/zone europe-west1-c         #zone
+  - gcloud container clusters get-credentials multi-cluster   #name of our cluster 
+  - docker login -u "$DOCKER_ID" -p "$DOCKER_PASSWORD" docker.io   #don't forget we use a token
+  - docker build -t justlblc445/react-test -f ./client/Dockerfile.dev ./client
+script:
+  - docker run -e CLI=true justlblc445/react-test npm test
+deploy:
+  provider: script        #Replaces EBS. Travis just has to run the script file
+  script: bash ./deploy.sh    #we will put a on a custom file called deploy.Sh, inside which a series of command will build our images, push them to dockerhub an so on.
+  on:
+    branch: master

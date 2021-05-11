@@ -10,7 +10,7 @@ before_install:
   - curl https://sdk.cloud.google.com | bash > /dev/null;   #going to download google cloud SDK and install it locally on our instance for travis CI.
   - source $HOME/google-cloud-sdk/path.bash.inc             #look at the default install directory of google cloud SDK, and source the file path.bash.inc.
   - gcloud components update kubectl                        #Install kubectk command.
-  - gcloud auth activate-sercice-account --key-file service-account.json    #autorisations to login 
+  - gcloud auth activate-service-account --key-file service-account.json    #autorisations to login 
   - gcloud config set project multi-k8s-312823            #project name
   - gcloud config set compute/zone europe-west1-c         #zone
   - gcloud container clusters get-credentials multi-cluster   #name of our cluster 
